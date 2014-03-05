@@ -1,2 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" />
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Public">
+      <UniqueIdentifier>{13dbed67-3c50-44e1-979d-f36ff70bc0eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{5a128138-c1f4-4869-b7be-1eb008d09859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Includes">
+      <UniqueIdentifier>{586ea15a-11cc-4407-b5e4-7cd773cae221}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Include\Illusynth.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Private\XAudio2Device.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Private\AudioDevice.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Private\XAudio2SourceVoice.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Private\XAudio2VoiceCallback.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\XAudio2SourceVoice.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XAudio2Device.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

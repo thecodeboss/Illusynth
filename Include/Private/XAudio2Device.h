@@ -27,6 +27,7 @@ public:
 	XAudio2SourceVoice* CreateSourceVoice(SourceVoiceType type = S_WAVE);
 	DWORD WINAPI StreamThreadMain(XAudio2SourceVoice* source);
 
+	friend class AudioDevice;
 	friend class XAudio2SourceVoice;
 	friend class XAudio2VoiceCallback;
 };

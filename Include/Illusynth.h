@@ -16,7 +16,7 @@
 	#define ILLUSYNTH_API extern
 #endif // _WINDOWS
 
-
+#ifndef DLL_SPECS_ONLY
 /************************************************************************/
 /* Primary Abstract Audio Device                                        */
 /************************************************************************/
@@ -33,5 +33,5 @@
 #endif // _WINDOWS
 
 
-
+#endif // DLL_SPECS_ONLY
 #endif // Illusynth_h__

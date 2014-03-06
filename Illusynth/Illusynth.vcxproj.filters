@@ -35,5 +35,8 @@
     <ClCompile Include="Source\XAudio2Device.cpp">
       <Filter>Private</Filter>
     </ClCompile>
+    <ClCompile Include="Source\AudioDevice.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -24,7 +24,8 @@ public:
 	virtual bool Cleanup();
 	bool PlaySourceVoice(XAudio2SourceVoice* source);
 
-	XAudio2SourceVoice* CreateSourceVoice(SourceVoiceType type = S_WAVE);
+	virtual AudioSource* CreateSoundSource(AudioSourceType type);
+	XAudio2SourceVoice* CreateSourceVoice(AudioSourceType type = S_WAVE);
 	DWORD WINAPI StreamThreadMain(XAudio2SourceVoice* source);
 
 	friend class AudioDevice;

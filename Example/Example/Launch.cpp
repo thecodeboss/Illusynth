@@ -3,9 +3,11 @@
 int main()
 {
 	AudioDevice* Audio = AudioDevice::GetInstance();//GetIllusynthInstance();
-	if (Audio != nullptr)
-	{
-		return 0;
-	}
-	else return -1;
+	if (Audio == nullptr) return -1;
+
+	bool result = Audio->Init();
+
+	AudioSource* MySoundSource = Audio->CreateSoundSource(S_WAVE);
+
+	return 0;
 }

@@ -3,13 +3,13 @@
 
 #if _WINDOWS
 
-XAudio2SourceVoice::XAudio2SourceVoice(SourceVoiceType type)
+XAudio2SourceVoice::XAudio2SourceVoice(AudioSourceType type)
 	: m_Source(nullptr), m_wfx(nullptr), m_Type(type)
 {
 
 }
 
-HRESULT XAudio2SourceVoice::Init()
+bool XAudio2SourceVoice::Init()
 {
 	HRESULT hr = XAudio2Device::XAudio2->CreateSourceVoice(&m_Source, (WAVEFORMATEX*)m_wfx, 0, 2.0f, m_Callback);
 	if (hr < 0)
@@ -19,25 +19,25 @@ HRESULT XAudio2SourceVoice::Init()
 	return true;
 }
 
-HRESULT XAudio2SourceVoice::Start()
+bool XAudio2SourceVoice::Start()
 {
 	// @ILLUSYNTH_TODO
 	return S_OK;
 }
 
-HRESULT XAudio2SourceVoice::Pause()
+bool XAudio2SourceVoice::Pause()
 {
 	// @ILLUSYNTH_TODO
 	return S_OK;
 }
 
-HRESULT XAudio2SourceVoice::Stop()
+bool XAudio2SourceVoice::Stop()
 {
 	// @ILLUSYNTH_TODO
-	return m_Source->Stop();
+	return (m_Source->Stop() == S_OK);
 }
 
-HRESULT XAudio2SourceVoice::Cleanup()
+bool XAudio2SourceVoice::Cleanup()
 {
 	// @ILLUSYNTH_TODO
 	m_Source->FlushSourceBuffers();

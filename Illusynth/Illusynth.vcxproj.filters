@@ -27,6 +27,9 @@
     <ClInclude Include="..\Include\Private\XAudio2VoiceCallback.h">
       <Filter>Private\Includes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Private\AudioSource.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XAudio2SourceVoice.cpp">

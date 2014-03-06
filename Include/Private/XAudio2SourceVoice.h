@@ -3,32 +3,27 @@
 #ifdef _WINDOWS
 
 #include <xaudio2.h>
+#include <Private\AudioSource.h>
 #include <Private\XAudio2VoiceCallback.h>
 
-enum SourceVoiceType
-{
-	S_WAVE,
-	S_PROCEDURAL
-};
-
-class XAudio2SourceVoice
+class XAudio2SourceVoice : public AudioSource
 {
 protected:
 	IXAudio2SourceVoice* m_Source;
 	WAVEFORMATEXTENSIBLE* m_wfx;
-	SourceVoiceType m_Type;
+	AudioSourceType m_Type;
 	BYTE* m_Buffers;
 
 	XAudio2VoiceCallback* m_Callback;
 public:
 
-	XAudio2SourceVoice(SourceVoiceType type = S_WAVE);
+	XAudio2SourceVoice(AudioSourceType type = S_WAVE);
 
-	virtual HRESULT Init();
-	virtual HRESULT Cleanup();
-	virtual HRESULT Start();
-	virtual HRESULT Pause();
-	virtual HRESULT Stop();
+	virtual bool Init();
+	virtual bool Cleanup();
+	virtual bool Start();
+	virtual bool Pause();
+	virtual bool Stop();
 };
 
 #endif // _WINDOWS

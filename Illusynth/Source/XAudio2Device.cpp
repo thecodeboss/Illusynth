@@ -64,7 +64,14 @@ bool XAudio2Device::Cleanup()
 	return true;
 }
 
-XAudio2SourceVoice* XAudio2Device::CreateSourceVoice(SourceVoiceType type)
+
+AudioSource* XAudio2Device::CreateSoundSource(AudioSourceType type)
+{
+	return CreateSourceVoice(type);
+}
+
+
+XAudio2SourceVoice* XAudio2Device::CreateSourceVoice(AudioSourceType type)
 {
 	// @ILLUSYNTH_TODO: Need to create custom allocators
 	return new XAudio2SourceVoice(type);

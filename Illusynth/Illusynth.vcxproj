@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Illusynth.h" />
+    <ClInclude Include="..\Include\Pitches.h" />
     <ClInclude Include="..\Include\Private\AudioDevice.h" />
     <ClInclude Include="..\Include\Private\AudioSource.h" />
     <ClInclude Include="..\Include\Private\XAudio2Device.h" />

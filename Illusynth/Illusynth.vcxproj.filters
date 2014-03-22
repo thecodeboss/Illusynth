@@ -30,6 +30,9 @@
     <ClInclude Include="..\Include\Private\AudioSource.h">
       <Filter>Private\Includes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Pitches.h">
+      <Filter>Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XAudio2SourceVoice.cpp">

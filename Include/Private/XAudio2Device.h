@@ -22,6 +22,7 @@ public:
 	static XAudio2Device* Get();
 	virtual bool Init();
 	virtual bool Cleanup();
+	virtual bool PlaySource(AudioSource* Source);
 	bool PlaySourceVoice(XAudio2SourceVoice* source);
 
 	virtual AudioSource* CreateSoundSource(AudioSourceType type);

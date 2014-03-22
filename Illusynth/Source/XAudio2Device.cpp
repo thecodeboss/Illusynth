@@ -74,11 +74,28 @@ AudioSource* XAudio2Device::CreateSoundSource(AudioSourceType type)
 XAudio2SourceVoice* XAudio2Device::CreateSourceVoice(AudioSourceType type)
 {
 	// @ILLUSYNTH_TODO: Need to create custom allocators
-	return new XAudio2SourceVoice(type);
+
+	switch (type)
+	{
+	case S_PROCEDURAL:
+		return new XAudio2ProceduralSourceVoice();
+	case S_WAVE:
+		break;
+	}
+
+	return nullptr;
+}
+
+
+bool XAudio2Device::PlaySource(AudioSource* Source)
+{
+	return PlaySourceVoice((XAudio2SourceVoice*)Source);
 }
 
 bool XAudio2Device::PlaySourceVoice( XAudio2SourceVoice* source )
 {
+	source->m_bPlaying = true;
+
 	// @ILLUSYNTH_TODO
 	XAudioStreamContext* s = new XAudioStreamContext(this, source);
 

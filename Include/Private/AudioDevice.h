@@ -15,6 +15,7 @@ public:
 	virtual ILLUSYNTH_API bool Init() = 0;
 	virtual ILLUSYNTH_API bool Cleanup() = 0;
 	virtual ILLUSYNTH_API AudioSource* CreateSoundSource(AudioSourceType type) = 0;
+	virtual ILLUSYNTH_API bool PlaySource(AudioSource* Source) = 0;
 };
 
 #endif // AudioDevice_h__

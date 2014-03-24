@@ -3,15 +3,16 @@
 
 int main()
 {
-	AudioDevice* Audio = AudioDevice::GetInstance();//GetIllusynthInstance();
+	AudioDevice* Audio = AudioDevice::GetInstance();
 	if (Audio == nullptr) return -1;
 
-	float Rhythm[] = {	NOTE_C3, NOTE_C3, NOTE_G3, NOTE_C3, 
-						NOTE_C3, NOTE_E3, NOTE_C3, NOTE_C3,
-						NOTE_D3, NOTE_C3, NOTE_C3, NOTE_A2,
-						NOTE_C3, NOTE_B2, NOTE_B2, NOTE_C3};
-	float Duration = 0.1f;
-	float Delay = 0.05f;
+#define NOTE_REST 0.0f
+	float Melody[] = { NOTE_G2, NOTE_G2, NOTE_G2, NOTE_G2,
+		NOTE_REST, NOTE_G2, NOTE_G2, NOTE_REST,
+		NOTE_A2S, NOTE_REST, NOTE_A2S, NOTE_A2S,
+		NOTE_A2S, NOTE_A2S, NOTE_REST, NOTE_A2S };
+	float Duration = 0.07f;
+	float Delay = 0.045f;
 
 	bool result = Audio->Init();
 
@@ -19,9 +20,9 @@ int main()
 	while (1)
 	{
 		AudioSource* MySoundSource = Audio->CreateSoundSource(S_PROCEDURAL);
-		for (auto i = 0; i < sizeof(Rhythm) / sizeof(float); i++)
+		for (auto i = 0; i < sizeof(Melody) / sizeof(float); i++)
 		{
-			MySoundSource->AddProcedural(W_SQUARE, Waveform(Rhythm[i], 0.3f, Duration, i*(Duration + Delay)) );
+			if (Melody[i]) MySoundSource->AddProcedural(W_SQUARE, Waveform(Melody[i], 0.3f, Duration, i*(Duration + Delay)) );
 		}
 
 		Audio->PlaySource(MySoundSource);

@@ -161,6 +161,7 @@
     <ClInclude Include="..\Include\Illusynth.h" />
     <ClInclude Include="..\Include\Pitches.h" />
     <ClInclude Include="..\Include\Private\AudioDevice.h" />
+    <ClInclude Include="..\Include\Private\AudioEffects.h" />
     <ClInclude Include="..\Include\Private\AudioSource.h" />
     <ClInclude Include="..\Include\Private\XAudio2Device.h" />
     <ClInclude Include="..\Include\Private\XAudio2SourceVoice.h" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\AudioDevice.cpp" />
+    <ClCompile Include="Source\AudioSource.cpp" />
     <ClCompile Include="Source\XAudio2Device.cpp" />
     <ClCompile Include="Source\XAudio2SourceVoice.cpp" />
   </ItemGroup>

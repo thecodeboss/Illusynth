@@ -65,25 +65,30 @@ bool XAudio2Device::Cleanup()
 }
 
 
-AudioSource* XAudio2Device::CreateSoundSource(AudioSourceType type)
+AudioSource* XAudio2Device::CreateSoundSource(AudioSourceType type, INT EffectFlags)
 {
-	return CreateSourceVoice(type);
+	return CreateSourceVoice(type, EffectFlags);
 }
 
 
-XAudio2SourceVoice* XAudio2Device::CreateSourceVoice(AudioSourceType type)
+XAudio2SourceVoice* XAudio2Device::CreateSourceVoice(AudioSourceType type, INT EffectFlags)
 {
 	// @ILLUSYNTH_TODO: Need to create custom allocators
+
+	XAudio2SourceVoice* ReturnValue = nullptr;
 
 	switch (type)
 	{
 	case S_PROCEDURAL:
-		return new XAudio2ProceduralSourceVoice();
+		ReturnValue = new XAudio2ProceduralSourceVoice();
 	case S_WAVE:
 		break;
 	}
 
-	return nullptr;
+	ReturnValue->m_EffectFlags = EffectFlags;
+	ReturnValue->Init();
+
+	return ReturnValue;
 }
 
 
@@ -97,10 +102,10 @@ bool XAudio2Device::PlaySourceVoice( XAudio2SourceVoice* source )
 	source->m_bPlaying = true;
 
 	// @ILLUSYNTH_TODO
-	XAudioStreamContext* s = new XAudioStreamContext(this, source);
+	XAudioStreamContext* StreamContext = new XAudioStreamContext(this, source);
 
 	DWORD dwThreadId = 0;
-	HANDLE StreamingVoiceThread = CreateThread( NULL, 0, StreamProc, s, 0, &dwThreadId );
+	HANDLE StreamingVoiceThread = CreateThread( NULL, 0, StreamProc, StreamContext, 0, &dwThreadId );
 	if( StreamingVoiceThread == NULL )
 	{
 		return false;
@@ -113,7 +118,10 @@ DWORD WINAPI XAudio2Device::StreamThreadMain( XAudio2SourceVoice* source )
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-	source->Init();
+	if (!source->m_bInitialized)
+	{
+		source->Init();
+	}
 
 	source->Start();
 	source->Stop();

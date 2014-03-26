@@ -4,9 +4,12 @@
 
 #define _USE_MATH_DEFINES 1
 #include <xaudio2.h>
+#include <xaudio2fx.h>
+#include <xapofx.h>
 #include <Private\AudioSource.h>
 #include <Private\XAudio2VoiceCallback.h>
 #include <vector>
+#include <mutex>
 
 #define PROCEDURAL_BUFFER_SIZE 2048
 #define MAX_BUFFER_COUNT 3
@@ -24,6 +27,7 @@ protected:
 	AudioSourceType m_Type;
 	BYTE* m_Buffers;
 	bool m_bPlaying;
+	bool m_bInitialized;
 
 	XAudio2VoiceCallback m_Callback;
 public:
@@ -38,10 +42,13 @@ public:
 	virtual bool IsPlaying();
 
 	virtual bool AddProcedural(WaveformType type, Waveform waveform) = 0;
+	virtual size_t GetNumProcedural() = 0;
+	virtual bool SetReverbSettings(float Diffusion = FXREVERB_DEFAULT_DIFFUSION, float RoomSize = FXREVERB_DEFAULT_ROOMSIZE);
 };
 
 class XAudio2ProceduralSourceVoice : public XAudio2SourceVoice
 {
+	std::mutex m_WaveformsLock;
 	std::vector<Waveform*> ActiveSquareWaves;
 	std::vector<Waveform*> ActiveSineWaves;
 	std::vector<Waveform*> ActiveSawWaves;
@@ -55,6 +62,7 @@ public:
 
 	XAudio2ProceduralSourceVoice();
 	virtual bool AddProcedural(WaveformType type, Waveform waveform);
+	virtual size_t GetNumProcedural();
 
 	virtual bool Init();
 	virtual bool Start();

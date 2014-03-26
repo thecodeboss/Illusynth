@@ -4,7 +4,7 @@
 #if _WINDOWS
 
 XAudio2SourceVoice::XAudio2SourceVoice(AudioSourceType type)
-	: m_Source(nullptr), m_wfx(nullptr), m_Type(type), m_bPlaying(false)
+	: m_Source(nullptr), m_wfx(nullptr), m_Type(type), m_bPlaying(false), m_bInitialized(false)
 {
 
 }
@@ -16,6 +16,44 @@ bool XAudio2SourceVoice::Init()
 	{
 		return false;
 	}
+
+	UINT32 NumEffects = 0;
+
+	IUnknown* ReverbXAPO = nullptr;
+	if (m_EffectFlags & ILLUSYNTH_FX_REVERB)
+	{
+		if (CreateFX(__uuidof(FXReverb), &ReverbXAPO) < 0)
+		{
+			return false;
+		}
+		NumEffects++;
+	}
+
+	IUnknown* EQ_XAPO = nullptr;
+	//if (m_EffectFlags & ILLUSYNTH_FX_EQ)
+	//{
+	//	if (XAudio2CreateReverb(&EQ_XAPO) < 0)
+	//	{
+	//		return false;
+	//	}
+	//	NumEffects++;
+	//}
+
+	XAUDIO2_EFFECT_DESCRIPTOR EffectDescriptors[] = {
+		{ ReverbXAPO, true, 1 },
+		{ EQ_XAPO, true, 1 }
+	};
+
+	if (NumEffects > 0)
+	{
+		XAUDIO2_EFFECT_CHAIN EffectChain;
+		EffectChain.EffectCount = NumEffects;
+		EffectChain.pEffectDescriptors = EffectDescriptors;
+
+		m_Source->SetEffectChain(&EffectChain);
+	}
+
+	m_bInitialized = true;
 
 	return true;
 }
@@ -53,6 +91,21 @@ bool XAudio2SourceVoice::Cleanup()
 	m_Source->DestroyVoice();
 
 	return S_OK;
+}
+
+bool XAudio2SourceVoice::SetReverbSettings(float Diffusion, float RoomSize)
+{
+	AudioSource::SetReverbSettings(Diffusion, RoomSize);
+
+	FXREVERB_PARAMETERS ReverbParameters;
+	ReverbParameters.Diffusion = m_ReverbSettings.Diffusion;
+	ReverbParameters.RoomSize = m_ReverbSettings.RoomSize;
+
+	if (m_Source->SetEffectParameters(0, &ReverbParameters, sizeof(ReverbParameters)) < 0)
+	{
+		return false;
+	}
+	return true;
 }
 
 /************************************************************************/
@@ -119,8 +172,12 @@ bool XAudio2ProceduralSourceVoice::Start()
 		CurrentPosition++;
 
 		// @ILLUSYNTH_TODO: Implement a 'IsFinished' function
-		if (ActiveSquareWaves.size() == 0 && SquareWaves.size() == 0) break;
+		m_WaveformsLock.lock();
+		if (ActiveSquareWaves.size() == 0 && SquareWaves.size() == 0 &&
+			ActiveSawWaves.size() == 0 && SawWaves.size() == 0) break;
+		m_WaveformsLock.unlock();
 	}
+	m_WaveformsLock.unlock();
 
 	// Wait for everything to finish
 	XAUDIO2_VOICE_STATE state;
@@ -152,10 +209,12 @@ bool XAudio2ProceduralSourceVoice::ComputeProceduralBuffer(BYTE * OutputLocation
 		float sample = 0.0f;
 		float Position = static_cast<float>((i / Increment)) / SampleRate;
 
+		m_WaveformsLock.lock();
 		ComputeSquareWaves(sample, Position, i, Increment, SampleRate, SamplePeriod, BufferSize);
 		ComputeSineWaves(sample, Position, i, Increment, SampleRate, SamplePeriod, BufferSize);
 		ComputeSawWaves(sample, Position, i, Increment, SampleRate, SamplePeriod, BufferSize);
 		ComputeNoise(sample, SamplePeriod);
+		m_WaveformsLock.unlock();
 
 		short temp = 0;
 		switch (m_wfx->Format.wBitsPerSample)
@@ -291,35 +350,45 @@ void XAudio2ProceduralSourceVoice::ComputeActiveSounds( unsigned CurrentBuffer, 
 {
 	float StartofBufferTime = static_cast<float>(CurrentBuffer)*static_cast<float>(SamplesPerBuffer) / static_cast<float>(m_wfx->Format.nSamplesPerSec) / (m_wfx->Format.wBitsPerSample / 8.0f);
 	float EndofBufferTime = static_cast<float>(CurrentBuffer+1)*static_cast<float>(SamplesPerBuffer) / static_cast<float>(m_wfx->Format.nSamplesPerSec) / (m_wfx->Format.wBitsPerSample / 8.0f);
+
+	m_WaveformsLock.lock();
 	ProcessActives(SquareWaves, ActiveSquareWaves, StartofBufferTime, EndofBufferTime);
 	ProcessActives(SineWaves, ActiveSineWaves, StartofBufferTime, EndofBufferTime);
 	ProcessActives(SawWaves, ActiveSawWaves, StartofBufferTime, EndofBufferTime);
 	ProcessActives(NoiseGenerators, ActiveNoiseGenerators, StartofBufferTime, EndofBufferTime);
-	//for (size_t i = SquareWaves.size() - 1; i >= 0; i--)
-	//{
-	//	Waveform* s = SquareWaves[i];
-	//	if (EndofBufferTime >= s->Delay)
-	//	{
-	//		ActiveSquareWaves.push_back(s);
-	//		SquareWaves.erase(SquareWaves.begin() + i);
-	//	}
-	//}
+	m_WaveformsLock.unlock();
 }
 
 bool XAudio2ProceduralSourceVoice::AddProcedural(WaveformType type, Waveform waveform)
 {
+	m_WaveformsLock.lock();
 	Waveform* NewWaveform = new Waveform(waveform);
 	switch (type)
 	{
 	case W_SQUARE:
 		SquareWaves.push_back(NewWaveform);
 		break;
+	case W_SAW:
+		SawWaves.push_back(NewWaveform);
+		break;
 	default:
 		delete NewWaveform;
+		m_WaveformsLock.unlock();
 		return false;
 		break;
 	}
+	m_WaveformsLock.unlock();
 	return true;
+}
+
+size_t XAudio2ProceduralSourceVoice::GetNumProcedural()
+{
+	m_WaveformsLock.lock();
+	size_t NumSines = ActiveSineWaves.size() + SineWaves.size();
+	size_t NumSaws = ActiveSawWaves.size() + SawWaves.size();
+	size_t NumSquares = ActiveSquareWaves.size() + SquareWaves.size();
+	m_WaveformsLock.unlock();
+	return NumSines + NumSaws + NumSquares;
 }
 
 #endif // _WINDOWS

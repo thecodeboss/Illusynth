@@ -21,6 +21,7 @@
 /* Primary Abstract Audio Device                                        */
 /************************************************************************/
 
+#include <Private\AudioEffects.h>
 #include <Private\AudioSource.h>
 #include <Private\AudioDevice.h>
 

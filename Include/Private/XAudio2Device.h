@@ -17,16 +17,16 @@ class XAudio2Device : public AudioDevice
 
 protected:
 	XAudio2Device();
+	XAudio2SourceVoice* CreateSourceVoice(AudioSourceType type, INT EffectFlags);
+	bool PlaySourceVoice(XAudio2SourceVoice* source);
 
 public:
 	static XAudio2Device* Get();
 	virtual bool Init();
 	virtual bool Cleanup();
 	virtual bool PlaySource(AudioSource* Source);
-	bool PlaySourceVoice(XAudio2SourceVoice* source);
 
-	virtual AudioSource* CreateSoundSource(AudioSourceType type);
-	XAudio2SourceVoice* CreateSourceVoice(AudioSourceType type = S_WAVE);
+	virtual AudioSource* CreateSoundSource(AudioSourceType type, INT EffectFlags = ILLUSYNTH_FX_NONE);
 	DWORD WINAPI StreamThreadMain(XAudio2SourceVoice* source);
 
 	friend class AudioDevice;

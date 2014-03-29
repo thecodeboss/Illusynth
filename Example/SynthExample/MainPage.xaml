@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="SynthExample.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SynthExample"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <local:DialControl x:Name="m_VolumeControl" HorizontalAlignment="Left" Margin="65,84,0,0" VerticalAlignment="Top" Height="111" Width="111"/>
+        <TextBlock HorizontalAlignment="Left" Margin="68,198,0,0" TextWrapping="Wrap" Text="{Binding Amount, ElementName=m_VolumeControl}" VerticalAlignment="Top" Height="23" Width="105" FontSize="12" TextAlignment="Center"/>
+
+        <local:DialControl x:Name="m_FilterControl" HorizontalAlignment="Left" Margin="185,84,0,0" VerticalAlignment="Top" Height="111" Width="111"/>
+        <TextBlock HorizontalAlignment="Left" Margin="188,198,0,0" TextWrapping="Wrap" Text="{Binding Amount, ElementName=m_FilterControl}" VerticalAlignment="Top" Height="23" Width="105" FontSize="12" TextAlignment="Center"/>
+        <ToggleSwitch  Name="m_bWaveType" Header="Wave Type Selector" HorizontalAlignment="Left" Margin="100,254,0,0" VerticalAlignment="Top" OnContent="Square" OffContent="Saw" Toggled="m_bWaveType_Toggled" />
+    </Grid>
+</Page>

@@ -1,0 +1,31 @@
+﻿<UserControl
+    Name="DialUserControl"
+    x:Class="SynthExample.DialControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SynthExample"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="400">
+
+    <Grid ManipulationMode="All" ManipulationDelta="Grid_ManipulationDelta">
+        <Ellipse Fill="#FF373740" />
+        <Grid>
+            <Grid.Resources>
+                <local:MultiplyByValueConverter x:Key="MultiplyByValueConverter"/>
+            </Grid.Resources>
+            <Grid.RenderTransform>
+                <RotateTransform CenterX="{Binding Path=Width, ElementName=DialUserControl, Converter={StaticResource MultiplyByValueConverter}, ConverterParameter=0.5}" 
+                                 CenterY="{Binding Path=Height, ElementName=DialUserControl, Converter={StaticResource MultiplyByValueConverter}, ConverterParameter=0.5}"
+                                 Angle="{Binding Angle}"/>
+            </Grid.RenderTransform>
+            <Ellipse Fill="#FFB4B4B4"
+                     Width="{Binding Path=Width, ElementName=DialUserControl, Converter={StaticResource MultiplyByValueConverter}, ConverterParameter='0.12f'}"
+                     Height="{Binding Path=Height, ElementName=DialUserControl, Converter={StaticResource MultiplyByValueConverter}, ConverterParameter='0.12f'}"
+                     Margin="{Binding Path=Height, ElementName=DialUserControl, Converter={StaticResource MultiplyByValueConverter}, ConverterParameter='0.08'}"
+                     VerticalAlignment="Top"/>
+        </Grid>
+    </Grid>
+</UserControl>

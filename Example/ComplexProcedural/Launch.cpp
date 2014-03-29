@@ -39,14 +39,15 @@ int main()
 	float EighthPauseDuration = TotalEighthDuration * (1.0f - DurationRatio);
 
 	AudioSource* MySoundSource = Audio->CreateSoundSource(S_PROCEDURAL, ILLUSYNTH_FX_REVERB);
-	MySoundSource->SetReverbSettings(0.2f, 0.2f);
+	MySoundSource->SetReverbSettings(0.1f, 0.1f);
 	int count = 0;
 	while (1)
 	{
 		for (auto i = 0; i < sizeof(Melody) / sizeof(float); i++,count++)
 		{
 			float Duration = (Properties[i] & SLIDE) ? TotalEighthDuration : EighthNoteDuration;
-			if (Melody[i]) MySoundSource->AddProcedural(W_SAW, Waveform(Melody[i], 0.3f, Duration, count*TotalEighthDuration));
+			float Amplitude = (Properties[i] & ACCENT) ? 0.4f : 0.2f;
+			if (Melody[i]) MySoundSource->AddProcedural(W_SAW, Waveform(Melody[i], Amplitude, Duration, count*TotalEighthDuration));
 		}
 
 		if (!MySoundSource->IsPlaying()) Audio->PlaySource(MySoundSource);

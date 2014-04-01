@@ -113,7 +113,7 @@ bool XAudio2SourceVoice::SetReverbSettings(float Diffusion, float RoomSize)
 /************************************************************************/
 
 XAudio2ProceduralSourceVoice::XAudio2ProceduralSourceVoice()
-	: XAudio2SourceVoice(S_PROCEDURAL)
+: XAudio2SourceVoice(S_PROCEDURAL), m_FilterCutoff(0.5f)
 {
 
 }
@@ -121,6 +121,11 @@ XAudio2ProceduralSourceVoice::XAudio2ProceduralSourceVoice()
 
 bool XAudio2ProceduralSourceVoice::Init()
 {
+	m_Mutex = CreateMutex(
+		NULL,              // default security attributes
+		FALSE,             // initially not owned
+		NULL);             // unnamed mutex
+
 	m_wfx = new WAVEFORMATEXTENSIBLE();
 	m_wfx->Format.wFormatTag = WAVE_FORMAT_PCM;
 	m_wfx->Format.nChannels = DEFAULT_PROCEDURAL_NUM_CHANNELS;
@@ -137,6 +142,8 @@ bool XAudio2ProceduralSourceVoice::Start()
 {
 	if (!XAudio2SourceVoice::Start()) return false;
 
+	if (m_Source == nullptr) return false;
+
 	HRESULT hr = m_Source->Start(0, 0);
 	if (hr < 0) return false;
 
@@ -145,8 +152,10 @@ bool XAudio2ProceduralSourceVoice::Start()
 	unsigned BufferSize = PROCEDURAL_BUFFER_SIZE;
 	while ( CurrentPosition < PROCEDURAL_BUFFER_SIZE )
 	{
+		WaitForSingleObject(m_Mutex, INFINITE);
 		ComputeActiveSounds(CurrentPosition, BufferSize);
 		ComputeProceduralBuffer((BYTE *)&m_Buffers[CurrentDiskReadBuffer*BufferSize], BufferSize);
+		ReleaseMutex(m_Mutex);
 
 		// Check with XAudio to see if there are any buffers available, and wait if needed
 		XAUDIO2_VOICE_STATE state;
@@ -164,20 +173,17 @@ bool XAudio2ProceduralSourceVoice::Start()
 		hr = m_Source->SubmitSourceBuffer( &buf );
 		if (hr < 0)
 		{
-			return false;
+			continue;
 		}
 
 		CurrentDiskReadBuffer++;
 		CurrentDiskReadBuffer %= MAX_BUFFER_COUNT;
 		CurrentPosition++;
 
-		// @ILLUSYNTH_TODO: Implement a 'IsFinished' function
-		m_WaveformsLock.lock();
-		if (ActiveSquareWaves.size() == 0 && SquareWaves.size() == 0 &&
-			ActiveSawWaves.size() == 0 && SawWaves.size() == 0) break;
-		m_WaveformsLock.unlock();
+		//// @ILLUSYNTH_TODO: Implement a 'IsFinished' function
+		//if (ActiveSquareWaves.size() == 0 && SquareWaves.size() == 0 &&
+		//	ActiveSawWaves.size() == 0 && SawWaves.size() == 0) break;
 	}
-	m_WaveformsLock.unlock();
 
 	// Wait for everything to finish
 	XAUDIO2_VOICE_STATE state;
@@ -209,12 +215,31 @@ bool XAudio2ProceduralSourceVoice::ComputeProceduralBuffer(BYTE * OutputLocation
 		float sample = 0.0f;
 		float Position = static_cast<float>((i / Increment)) / SampleRate;
 
-		m_WaveformsLock.lock();
 		ComputeSquareWaves(sample, Position, i, Increment, SampleRate, SamplePeriod, BufferSize);
 		ComputeSineWaves(sample, Position, i, Increment, SampleRate, SamplePeriod, BufferSize);
 		ComputeSawWaves(sample, Position, i, Increment, SampleRate, SamplePeriod, BufferSize);
 		ComputeNoise(sample, SamplePeriod);
-		m_WaveformsLock.unlock();
+
+		// HACKY LOW PASS FILTER
+		static float n[4] = { 0 };
+
+		float cut_lp = m_FilterCutoff; // cutoff frequency of the lowpass(0..1)
+		float cut_hp = m_FilterCutoff; // cutoff frequency of the hipass(0..1)
+		static float res_lp = 0.8f; // resonance of the lowpass(0..1)
+		static float res_hp = 0.5f; // resonance of the hipass(0..1)
+
+		static float fb_lp = 0.0f;
+		static float fb_hp = 0.0f;
+
+		fb_lp = res_lp + res_lp / (1 - cut_lp);
+		fb_hp = res_hp + res_hp / (1 - cut_lp);
+
+		n[1] = n[1] + cut_lp*(sample - n[1] + fb_lp*(n[1] - n[2]));// +p4;
+		n[2] = n[2] + cut_lp*(n[1] - n[2]);
+		n[3] = n[3] + cut_hp*(n[2] - n[3] + fb_hp*(n[3] - n[4]));// +p4;
+		n[4] = n[4] + cut_hp*(n[3] - n[4]);
+
+		sample -= n[4];
 
 		short temp = 0;
 		switch (m_wfx->Format.wBitsPerSample)
@@ -292,7 +317,7 @@ void XAudio2ProceduralSourceVoice::ComputeSawWaves( float& sample, float Positio
 		if (s->Duration < 0.0f) continue;
 
 		float Period = 1.0f / s->Frequency;
-		sample += fmod(Position + s->Offset, Period) / Period;
+		sample += s->Amplitude * fmod(Position + s->Offset, Period) / Period;
 
 		s->Duration -= SamplePeriod;
 		if (Index + Increment == BufferSize) s->Offset += Position;
@@ -351,17 +376,15 @@ void XAudio2ProceduralSourceVoice::ComputeActiveSounds( unsigned CurrentBuffer, 
 	float StartofBufferTime = static_cast<float>(CurrentBuffer)*static_cast<float>(SamplesPerBuffer) / static_cast<float>(m_wfx->Format.nSamplesPerSec) / (m_wfx->Format.wBitsPerSample / 8.0f);
 	float EndofBufferTime = static_cast<float>(CurrentBuffer+1)*static_cast<float>(SamplesPerBuffer) / static_cast<float>(m_wfx->Format.nSamplesPerSec) / (m_wfx->Format.wBitsPerSample / 8.0f);
 
-	m_WaveformsLock.lock();
 	ProcessActives(SquareWaves, ActiveSquareWaves, StartofBufferTime, EndofBufferTime);
 	ProcessActives(SineWaves, ActiveSineWaves, StartofBufferTime, EndofBufferTime);
 	ProcessActives(SawWaves, ActiveSawWaves, StartofBufferTime, EndofBufferTime);
 	ProcessActives(NoiseGenerators, ActiveNoiseGenerators, StartofBufferTime, EndofBufferTime);
-	m_WaveformsLock.unlock();
 }
 
 bool XAudio2ProceduralSourceVoice::AddProcedural(WaveformType type, Waveform waveform)
 {
-	m_WaveformsLock.lock();
+	WaitForSingleObject(m_Mutex, INFINITE);
 	Waveform* NewWaveform = new Waveform(waveform);
 	switch (type)
 	{
@@ -373,22 +396,33 @@ bool XAudio2ProceduralSourceVoice::AddProcedural(WaveformType type, Waveform wav
 		break;
 	default:
 		delete NewWaveform;
-		m_WaveformsLock.unlock();
+		ReleaseMutex(m_Mutex);
 		return false;
 		break;
 	}
-	m_WaveformsLock.unlock();
+	ReleaseMutex(m_Mutex);
 	return true;
 }
 
 size_t XAudio2ProceduralSourceVoice::GetNumProcedural()
 {
-	m_WaveformsLock.lock();
+	WaitForSingleObject(m_Mutex, INFINITE);
 	size_t NumSines = ActiveSineWaves.size() + SineWaves.size();
 	size_t NumSaws = ActiveSawWaves.size() + SawWaves.size();
 	size_t NumSquares = ActiveSquareWaves.size() + SquareWaves.size();
-	m_WaveformsLock.unlock();
+	ReleaseMutex(m_Mutex);
 	return NumSines + NumSaws + NumSquares;
+}
+
+bool XAudio2ProceduralSourceVoice::SetFilterCutoff(int FilterHandle, float Cutoff)
+{
+	if (!AudioSource::SetFilterCutoff(FilterHandle, Cutoff))
+	{
+		return false;
+	}
+
+	m_FilterCutoff = (Cutoff > 0.999f) ? 0.999f : Cutoff;
+	return true;
 }
 
 #endif // _WINDOWS

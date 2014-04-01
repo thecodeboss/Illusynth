@@ -28,12 +28,14 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -41,6 +43,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -48,6 +51,7 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -101,7 +105,8 @@
       <AdditionalDependencies>xaudio2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"</Command>
+      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -116,7 +121,8 @@
       <AdditionalDependencies>xaudio2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"</Command>
+      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +141,8 @@
       <AdditionalDependencies>xaudio2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"</Command>
+      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,7 +161,8 @@
       <AdditionalDependencies>xaudio2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"</Command>
+      <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

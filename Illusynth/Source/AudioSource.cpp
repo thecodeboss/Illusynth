@@ -6,3 +6,8 @@ bool AudioSource::SetReverbSettings(float Diffusion, float RoomSize)
 	m_ReverbSettings.RoomSize = RoomSize;
 	return true;
 }
+
+bool AudioSource::SetFilterCutoff(int FilterHandle, float Cutoff)
+{
+	return true;
+}

@@ -9,7 +9,6 @@
 #include <Private\AudioSource.h>
 #include <Private\XAudio2VoiceCallback.h>
 #include <vector>
-#include <mutex>
 
 #define PROCEDURAL_BUFFER_SIZE 2048
 #define MAX_BUFFER_COUNT 3
@@ -48,7 +47,9 @@ public:
 
 class XAudio2ProceduralSourceVoice : public XAudio2SourceVoice
 {
-	std::mutex m_WaveformsLock;
+	HANDLE m_Mutex;
+	float m_FilterCutoff;
+
 	std::vector<Waveform*> ActiveSquareWaves;
 	std::vector<Waveform*> ActiveSineWaves;
 	std::vector<Waveform*> ActiveSawWaves;
@@ -63,6 +64,7 @@ public:
 	XAudio2ProceduralSourceVoice();
 	virtual bool AddProcedural(WaveformType type, Waveform waveform);
 	virtual size_t GetNumProcedural();
+	virtual bool SetFilterCutoff(int FilterHandle, float Cutoff);
 
 	virtual bool Init();
 	virtual bool Start();

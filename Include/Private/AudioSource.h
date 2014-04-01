@@ -54,6 +54,7 @@ public:
 	virtual bool AddProcedural(WaveformType type, Waveform waveform) = 0;
 	virtual size_t GetNumProcedural() = 0;
 	virtual bool SetReverbSettings(float Diffusion = 0.9f, float RoomSize = 0.6f);
+	virtual bool SetFilterCutoff(int FilterHandle, float Cutoff);
 };
 
 #endif // AudioSource_h__

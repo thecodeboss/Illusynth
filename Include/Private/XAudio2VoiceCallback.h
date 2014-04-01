@@ -9,7 +9,7 @@ class XAudio2VoiceCallback : public IXAudio2VoiceCallback
 public:
 	HANDLE hBufferEndEvent;
 
-	XAudio2VoiceCallback() : hBufferEndEvent( CreateEvent( NULL, FALSE, FALSE, NULL ) ) {}
+	XAudio2VoiceCallback() : hBufferEndEvent( CreateEventEx( NULL, FALSE, FALSE, NULL ) ) {}
 	virtual ~XAudio2VoiceCallback() { CloseHandle( hBufferEndEvent ); }
 
 	//overrides

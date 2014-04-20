@@ -26,8 +26,8 @@ public:
 	virtual bool Init();
 	virtual bool Cleanup();
 	virtual bool PlaySource(AudioSource* Source);
-
 	virtual AudioSource* CreateSoundSource(AudioSourceType type, INT EffectFlags = ILLUSYNTH_FX_NONE);
+
 	DWORD WINAPI StreamThreadMain(XAudio2SourceVoice* source);
 
 	friend class AudioDevice;

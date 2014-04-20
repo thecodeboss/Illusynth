@@ -38,6 +38,7 @@ protected:
 public:
 
 	XAudio2SourceVoice(AudioSourceType type = S_WAVE);
+	XAudio2SourceVoice(std::string name, AudioSourceType type = S_WAVE);
 
 	virtual bool Init();
 	virtual bool Cleanup();

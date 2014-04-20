@@ -6,6 +6,7 @@
 #undef DLL_SPECS_ONLY
 
 #include <Private\AudioEffects.h>
+#include <string>
 
 enum AudioSourceType
 {
@@ -40,11 +41,15 @@ struct Noise
 
 class AudioSource
 {
+	static int AudioSourceCounter;
+	int m_SourceID;
 protected:
 	int m_EffectFlags;
 	ReverbSettings m_ReverbSettings;
 	AudioSourceType m_Type;
+	std::string m_Name;
 	AudioSource(AudioSourceType type = S_WAVE);
+	AudioSource(std::string name, AudioSourceType type = S_WAVE);
 public:
 	virtual bool Init() = 0;
 	virtual bool Cleanup() = 0;
@@ -52,6 +57,7 @@ public:
 	virtual bool Pause() = 0;
 	virtual bool Stop() = 0;
 	virtual bool IsPlaying() = 0;
+	std::string GetName() const;
 
 	virtual bool AddProcedural(WaveformType type, Waveform waveform);
 	virtual size_t GetNumProcedural() = 0;

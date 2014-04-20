@@ -1,4 +1,5 @@
 #include <Private\XAudio2Device.h>
+#include <Private\Debug.h>
 
 #ifdef _WINDOWS
 
@@ -42,15 +43,28 @@ bool XAudio2Device::Init()
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	// Initialize the XAudio2 instance
-	if (XAudio2Create(&XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR) < 0)
+	if (!XAudio2CheckedCall(XAudio2Create(&XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR)))
 	{
+		ConsolePrintf(TEXT("Failed to initialize XAudio2."));
 		return false;
 	}
 
+#if _DEBUG
+	XAUDIO2_DEBUG_CONFIGURATION DebugSettings;
+	DebugSettings.TraceMask = XAUDIO2_LOG_WARNINGS;
+	DebugSettings.BreakMask = XAUDIO2_LOG_WARNINGS;
+	DebugSettings.LogThreadID = true;
+	DebugSettings.LogFileline = true;
+	DebugSettings.LogFunctionName = true;
+	DebugSettings.LogTiming = true;
+
+	XAudio2->SetDebugConfiguration(&DebugSettings);
+#endif
+
 	// Initialize the mastering voice to handle all audio
-	HRESULT hr = XAudio2->CreateMasteringVoice(&XAudio2MasteringVoice);
-	if (hr < 0)
+	if (!XAudio2CheckedCall(XAudio2->CreateMasteringVoice(&XAudio2MasteringVoice)))
 	{
+		ConsolePrintf(TEXT("Failed to create XAudio2 mastering voice."));
 		return false;
 	}
 
@@ -63,7 +77,6 @@ bool XAudio2Device::Cleanup()
 	CoUninitialize();
 	return true;
 }
-
 
 AudioSource* XAudio2Device::CreateSoundSource(AudioSourceType type, INT EffectFlags)
 {
@@ -123,9 +136,16 @@ DWORD WINAPI XAudio2Device::StreamThreadMain( XAudio2SourceVoice* source )
 		source->Init();
 	}
 
+	DebugConsolePrintf("Starting XAudio2 source (%s)", source->GetName());
 	source->Start();
+
+	DebugConsolePrintf("Stopping XAudio2 source (%s)", source->GetName());
 	source->Stop();
+
+	DebugConsolePrintf("Cleaning up XAudio2 source (%s)", source->GetName());
 	source->Cleanup();
+
+	DebugConsolePrintf("XAudio2 source cleaned up (%s)", source->GetName());
 
 	CoUninitialize();
 

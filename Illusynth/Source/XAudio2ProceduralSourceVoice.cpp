@@ -1,4 +1,5 @@
 #include <Private\XAudio2ProceduralSourceVoice.h>
+#include <Private\Debug.h>
 
 #if _WINDOWS
 
@@ -38,13 +39,15 @@ bool XAudio2ProceduralSourceVoice::Start()
 
 	if (m_Source == nullptr) return false;
 
-	HRESULT hr = m_Source->Start(0, 0);
-	if (hr < 0) return false;
+	if (!XAudio2CheckedCall(m_Source->Start(0, 0)))
+	{
+		return false;
+	}
 
 	unsigned CurrentDiskReadBuffer = 0;
 	unsigned CurrentPosition = 0;
 	unsigned BufferSize = PROCEDURAL_BUFFER_SIZE;
-	while (CurrentPosition < PROCEDURAL_BUFFER_SIZE)
+	while (m_bPlaying)
 	{
 		WaitForSingleObject(m_Mutex, INFINITE);
 		ComputeActiveSounds(CurrentPosition, BufferSize);
@@ -64,10 +67,10 @@ bool XAudio2ProceduralSourceVoice::Start()
 		buf.pAudioData = &m_Buffers[CurrentDiskReadBuffer*BufferSize];
 
 		// Submit buffers
-		hr = m_Source->SubmitSourceBuffer(&buf);
-		if (hr < 0)
+		if (!XAudio2CheckedCall(m_Source->SubmitSourceBuffer(&buf)))
 		{
-			continue;
+			ConsolePrintf(TEXT("XAudio2: Failed to submit source buffers."));
+			break;
 		}
 
 		CurrentDiskReadBuffer++;
@@ -85,6 +88,8 @@ bool XAudio2ProceduralSourceVoice::Start()
 	{
 		WaitForSingleObjectEx(m_Callback.hBufferEndEvent, INFINITE, TRUE);
 	}
+
+	DebugConsolePrintf(TEXT("Finished playing procedural source voice (%s)"), m_Name);
 
 	return S_OK;
 }

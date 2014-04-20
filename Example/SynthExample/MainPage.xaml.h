@@ -6,7 +6,7 @@
 #pragma once
 
 #include "MainPage.g.h"
-#include <Synth.h>
+#include "Synth.h"
 
 namespace SynthExample
 {

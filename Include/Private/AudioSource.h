@@ -43,6 +43,8 @@ class AudioSource
 protected:
 	int m_EffectFlags;
 	ReverbSettings m_ReverbSettings;
+	AudioSourceType m_Type;
+	AudioSource(AudioSourceType type = S_WAVE);
 public:
 	virtual bool Init() = 0;
 	virtual bool Cleanup() = 0;
@@ -51,7 +53,7 @@ public:
 	virtual bool Stop() = 0;
 	virtual bool IsPlaying() = 0;
 
-	virtual bool AddProcedural(WaveformType type, Waveform waveform) = 0;
+	virtual bool AddProcedural(WaveformType type, Waveform waveform);
 	virtual size_t GetNumProcedural() = 0;
 	virtual bool SetReverbSettings(float Diffusion = 0.9f, float RoomSize = 0.6f);
 	virtual bool SetFilterCutoff(int FilterHandle, float Cutoff);

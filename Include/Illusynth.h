@@ -25,15 +25,5 @@
 #include <Private\AudioSource.h>
 #include <Private\AudioDevice.h>
 
-
-/************************************************************************/
-/* Platform Specific Audio Devices                                      */
-/************************************************************************/
-
-#ifdef _WINDOWS
-	#include <Private\XAudio2Device.h>
-#endif // _WINDOWS
-
-
 #endif // DLL_SPECS_ONLY
 #endif // Illusynth_h__

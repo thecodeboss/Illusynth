@@ -5,6 +5,7 @@
 #include <xaudio2.h>
 #include <Private\AudioDevice.h>
 #include <Private\XAudio2SourceVoice.h>
+#include <Private\XAudio2ProceduralSourceVoice.h>
 #include <Private\XAudio2VoiceCallback.h>
 
 DWORD WINAPI StreamProc(LPVOID pContext);

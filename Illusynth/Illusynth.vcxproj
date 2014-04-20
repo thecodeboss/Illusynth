@@ -106,7 +106,8 @@
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -122,7 +123,8 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,7 +144,8 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -162,7 +165,8 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
+echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,7 +175,9 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)
     <ClInclude Include="..\Include\Private\AudioDevice.h" />
     <ClInclude Include="..\Include\Private\AudioEffects.h" />
     <ClInclude Include="..\Include\Private\AudioSource.h" />
+    <ClInclude Include="..\Include\Private\Debug.h" />
     <ClInclude Include="..\Include\Private\XAudio2Device.h" />
+    <ClInclude Include="..\Include\Private\XAudio2ProceduralSourceVoice.h" />
     <ClInclude Include="..\Include\Private\XAudio2SourceVoice.h" />
     <ClInclude Include="..\Include\Private\XAudio2VoiceCallback.h" />
   </ItemGroup>
@@ -179,6 +185,7 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)
     <ClCompile Include="Source\AudioDevice.cpp" />
     <ClCompile Include="Source\AudioSource.cpp" />
     <ClCompile Include="Source\XAudio2Device.cpp" />
+    <ClCompile Include="Source\XAudio2ProceduralSourceVoice.cpp" />
     <ClCompile Include="Source\XAudio2SourceVoice.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

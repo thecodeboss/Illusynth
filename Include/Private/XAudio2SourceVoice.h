@@ -17,18 +17,24 @@
 #define DEFAULT_PROCEDURAL_SAMPLE_RATE 48000
 #define DEFAULT_PROCEDURAL_BITS_PER_SAMPLE 16
 
+enum XAudio2EffectIndices
+{
+	XAUDIO2_REVERB_EFFECT_INDEX = 0,
+	XAUDIO2_EQ_EFFECT_INDEX = 1
+};
+
 class XAudio2SourceVoice : public AudioSource
 {
 	friend class XAudio2Device;
 protected:
 	IXAudio2SourceVoice* m_Source;
 	WAVEFORMATEXTENSIBLE* m_wfx;
-	AudioSourceType m_Type;
 	BYTE* m_Buffers;
 	bool m_bPlaying;
 	bool m_bInitialized;
 
 	XAudio2VoiceCallback m_Callback;
+
 public:
 
 	XAudio2SourceVoice(AudioSourceType type = S_WAVE);
@@ -43,37 +49,6 @@ public:
 	virtual bool AddProcedural(WaveformType type, Waveform waveform) = 0;
 	virtual size_t GetNumProcedural() = 0;
 	virtual bool SetReverbSettings(float Diffusion = FXREVERB_DEFAULT_DIFFUSION, float RoomSize = FXREVERB_DEFAULT_ROOMSIZE);
-};
-
-class XAudio2ProceduralSourceVoice : public XAudio2SourceVoice
-{
-	HANDLE m_Mutex;
-	float m_FilterCutoff;
-
-	std::vector<Waveform*> ActiveSquareWaves;
-	std::vector<Waveform*> ActiveSineWaves;
-	std::vector<Waveform*> ActiveSawWaves;
-	std::vector<Noise*> ActiveNoiseGenerators;
-public:
-
-	std::vector<Waveform*> SquareWaves;
-	std::vector<Waveform*> SineWaves;
-	std::vector<Waveform*> SawWaves;
-	std::vector<Noise*> NoiseGenerators;
-
-	XAudio2ProceduralSourceVoice();
-	virtual bool AddProcedural(WaveformType type, Waveform waveform);
-	virtual size_t GetNumProcedural();
-	virtual bool SetFilterCutoff(int FilterHandle, float Cutoff);
-
-	virtual bool Init();
-	virtual bool Start();
-	bool ComputeProceduralBuffer(BYTE * OutputLocation, unsigned BufferSize);
-	void ComputeSquareWaves(float& sample, float Position, unsigned Index, unsigned Increment, float SampleRate, float SamplePeriod, unsigned BufferSize);
-	void ComputeSineWaves(float& sample, float Position, unsigned Index, unsigned Increment, float SampleRate, float SamplePeriod, unsigned BufferSize);
-	void ComputeSawWaves(float& sample, float Position, unsigned Index, unsigned Increment, float SampleRate, float SamplePeriod, unsigned BufferSize);
-	void ComputeNoise(float& sample, float SamplePeriod);
-	void ComputeActiveSounds( unsigned CurrentBuffer, unsigned SamplesPerBuffer );
 };
 
 #endif // _WINDOWS

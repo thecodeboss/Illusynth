@@ -9,11 +9,14 @@
 #define ILLUSYNTH_FX_REVERB		0x1
 #define ILLUSYNTH_FX_EQ			0x2
 
+#define ILLUSYNTH_DEFAULT_REVERB_DIFFUSION 0.9f
+#define ILLUSYNTH_DEFAULT_REVERB_ROOMSIZE 0.6f
+
 struct ReverbSettings
 {
 	float Diffusion;
 	float RoomSize;
-	ReverbSettings() : Diffusion(0.9f), RoomSize(0.6f) {}
+	ReverbSettings() : Diffusion(ILLUSYNTH_DEFAULT_REVERB_DIFFUSION), RoomSize(ILLUSYNTH_DEFAULT_REVERB_ROOMSIZE) {}
 };
 
 #endif // AudioEffects_h__

@@ -36,6 +36,12 @@
     <ClInclude Include="..\Include\Private\AudioEffects.h">
       <Filter>Private\Includes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Private\Debug.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Private\XAudio2ProceduralSourceVoice.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XAudio2SourceVoice.cpp">
@@ -48,6 +54,9 @@
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\AudioSource.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\XAudio2ProceduralSourceVoice.cpp">
       <Filter>Private</Filter>
     </ClCompile>
   </ItemGroup>

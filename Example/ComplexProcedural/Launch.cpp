@@ -38,22 +38,44 @@ int main()
 	float EighthNoteDuration = TotalEighthDuration * DurationRatio;
 	float EighthPauseDuration = TotalEighthDuration * (1.0f - DurationRatio);
 
-	AudioSource* MySoundSource = Audio->CreateSoundSource(S_PROCEDURAL, ILLUSYNTH_FX_REVERB);
-	MySoundSource->SetReverbSettings(0.1f, 0.1f);
+	// Create a sound source with an oscillator (and track)
+	AudioSource* MySoundSource = Audio->CreateSoundSource(S_PROCEDURAL);
+	Oscillator* MainOscillator = MySoundSource->AddOscillator(O_SAW);
+	OscillatorTrack* MainTrack = new OscillatorTrack();
+	MainOscillator->SetOscillatorTrack(MainTrack);
+
 	int count = 0;
 	while (1)
 	{
-		for (auto i = 0; i < sizeof(Melody) / sizeof(float); i++,count++)
+		int i = count % (sizeof(Melody) / sizeof(float));
+		float Amplitude = (Properties[i] & ACCENT) ? 1.0f : 0.5f;
+		if (Properties[i] & SLIDE)
 		{
-			float Duration = (Properties[i] & SLIDE) ? TotalEighthDuration : EighthNoteDuration;
-			float Amplitude = (Properties[i] & ACCENT) ? 0.4f : 0.2f;
-			if (Melody[i]) MySoundSource->AddProcedural(W_SAW, Waveform(Melody[i], Amplitude, Duration, count*TotalEighthDuration));
+			MainTrack->AddFrame(Melody[i], Amplitude, TotalEighthDuration);
+		}
+		else
+		{
+			MainTrack->AddFrame(Melody[i], Amplitude, EighthNoteDuration);
+			MainTrack->AddFrame(Melody[i], 0.0f, TotalEighthDuration - EighthNoteDuration);
 		}
 
 		if (!MySoundSource->IsPlaying()) Audio->PlaySource(MySoundSource);
 
-		// Infinite loop until playback needs more samples
-		while (MySoundSource->GetNumProcedural() > 3);
+		// Infinite loop until playback needs more info
+		while (MainTrack->GetSize() > 1)
+		{
+			if (!MySoundSource->IsPlaying())
+			{
+				break;
+			}
+		}
+
+		if (!MySoundSource->IsPlaying())
+		{
+			break;
+		}
+
+		count++;
 	}
 
 	return 0;

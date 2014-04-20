@@ -1,6 +1,7 @@
 #ifndef Pitches_h__
 #define Pitches_h__
 
+#define NOTE_REST 0.0f
 #define NOTE_C0 16.35f
 #define NOTE_C0S 17.32f
 #define NOTE_D0 18.35f

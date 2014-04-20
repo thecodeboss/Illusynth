@@ -16,7 +16,6 @@ int main()
 	if (!Audio->Init()) return -1;
 
 	// A simple 16 note melody
-#define NOTE_REST 0.0f
 	float Melody[] = {	NOTE_G2, NOTE_G2, NOTE_G2, NOTE_G2,
 						NOTE_REST, NOTE_G2, NOTE_G2, NOTE_REST,
 						NOTE_A2S, NOTE_REST, NOTE_A2S, NOTE_A2S,
@@ -26,23 +25,24 @@ int main()
 	float Duration = 0.07f;
 	float Delay = 0.045f;
 
-	// We loop continuously, creating new sound sources and deleting the old ones
-	AudioSource* OldSource = nullptr;
+	// Create a sound source with an oscillator (and track)
+	AudioSource* MySoundSource = Audio->CreateSoundSource(S_PROCEDURAL);
+	Oscillator* MainOscillator = MySoundSource->AddOscillator(O_SAW);
+	OscillatorTrack* MainTrack = new OscillatorTrack();
+	MainOscillator->SetOscillatorTrack(MainTrack);
+
 	while (1)
 	{
-		AudioSource* MySoundSource = Audio->CreateSoundSource(S_PROCEDURAL);
 		for (auto i = 0; i < sizeof(Melody) / sizeof(float); i++)
 		{
-			if (Melody[i]) MySoundSource->AddProcedural(W_SQUARE, Waveform(Melody[i], 0.3f, Duration, i*(Duration + Delay)) );
+			MainTrack->AddFrame(Melody[i], 1.0f, Duration);
+			MainTrack->AddFrame(0.0f, 0.0f, Delay);
 		}
 
-		Audio->PlaySource(MySoundSource);
+		if (!MySoundSource->IsPlaying()) Audio->PlaySource(MySoundSource);
 
-		// Infinite loop until sound is complete
-		while (MySoundSource->IsPlaying());
-
-		if (OldSource != nullptr) delete OldSource;
-		OldSource = MySoundSource;
+		// Loop until the track needs more data
+		while (MainTrack->GetSize() > 1);
 	}
 
 	return 0;

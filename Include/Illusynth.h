@@ -1,6 +1,13 @@
 #ifndef Illusynth_h__
 #define Illusynth_h__
 
+/************************************************************************/
+/* Global defines                                                       */
+/************************************************************************/
+
+#define DEFAULT_PROCEDURAL_NUM_CHANNELS 1
+#define DEFAULT_PROCEDURAL_SAMPLE_RATE 48000
+#define DEFAULT_PROCEDURAL_BITS_PER_SAMPLE 16
 
 /************************************************************************/
 /* DLL Exports Setup                                                    */
@@ -21,6 +28,7 @@
 /* Primary Abstract Audio Device                                        */
 /************************************************************************/
 
+#include <Private\Oscillator.h>
 #include <Private\AudioEffects.h>
 #include <Private\AudioSource.h>
 #include <Private\AudioDevice.h>

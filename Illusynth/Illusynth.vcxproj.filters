@@ -42,6 +42,12 @@
     <ClInclude Include="..\Include\Private\XAudio2ProceduralSourceVoice.h">
       <Filter>Private\Includes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\Private\Oscillator.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Private\OscillatorTrack.h">
+      <Filter>Private\Includes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\XAudio2SourceVoice.cpp">
@@ -57,6 +63,12 @@
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="Source\XAudio2ProceduralSourceVoice.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Oscillator.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OscillatorTrack.cpp">
       <Filter>Private</Filter>
     </ClCompile>
   </ItemGroup>

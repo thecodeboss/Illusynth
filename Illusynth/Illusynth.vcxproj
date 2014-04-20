@@ -106,7 +106,6 @@
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
 echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -123,7 +122,6 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Confi
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
 echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -144,7 +142,6 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Confi
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
 echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -165,7 +162,6 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Confi
     </Link>
     <PostBuildEvent>
       <Command>echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\$(TargetName)$(TargetExt)"
-echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)Example\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"
 echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Configuration)\$(Platform)\AppX\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -176,6 +172,8 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Confi
     <ClInclude Include="..\Include\Private\AudioEffects.h" />
     <ClInclude Include="..\Include\Private\AudioSource.h" />
     <ClInclude Include="..\Include\Private\Debug.h" />
+    <ClInclude Include="..\Include\Private\Oscillator.h" />
+    <ClInclude Include="..\Include\Private\OscillatorTrack.h" />
     <ClInclude Include="..\Include\Private\XAudio2Device.h" />
     <ClInclude Include="..\Include\Private\XAudio2ProceduralSourceVoice.h" />
     <ClInclude Include="..\Include\Private\XAudio2SourceVoice.h" />
@@ -184,6 +182,8 @@ echo f | xcopy /f /y "$(TargetPath)" "$(SolutionDir)..\Illusynth-App\bin\$(Confi
   <ItemGroup>
     <ClCompile Include="Source\AudioDevice.cpp" />
     <ClCompile Include="Source\AudioSource.cpp" />
+    <ClCompile Include="Source\Oscillator.cpp" />
+    <ClCompile Include="Source\OscillatorTrack.cpp" />
     <ClCompile Include="Source\XAudio2Device.cpp" />
     <ClCompile Include="Source\XAudio2ProceduralSourceVoice.cpp" />
     <ClCompile Include="Source\XAudio2SourceVoice.cpp" />
